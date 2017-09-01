@@ -21,181 +21,160 @@ import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.context.User;
 import com.liferay.mobile.screens.context.storage.CredentialsStorageBuilder;
 import com.liferay.omnihackathon.R;
+import com.liferay.omnihackathon.model.Processo;
 import com.liferay.omnihackathon.util.AndroidUtil;
 import com.liferay.omnihackathon.util.Constants;
 import com.liferay.omnihackathon.util.DialogUtil;
 import com.liferay.omnihackathon.util.StringPool;
 import com.liferay.omnihackathon.util.Validator;
+import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemListActivity extends AppCompatActivity {
 
-	/**
-	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-	 * device.
-	 */
-	private static final String TAG = ItemListActivity.class.getName();
-	private User user;
-	private SimpleItemRecyclerViewAdapter simpleItemRecyclerViewAdapter;
-	private AlertDialog alertDialog;
+    /**
+     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+     * device.
+     */
+    private static final String TAG = ItemListActivity.class.getName();
+    private User user;
+    private SimpleItemRecyclerViewAdapter simpleItemRecyclerViewAdapter;
+    private AlertDialog alertDialog;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-		super.onCreate(savedInstanceState);
-		Bundle bundle = getIntent().getExtras();
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
 
-		try {
-			user = new User(new JSONObject(bundle.getString(Constants.USER)));
+        try {
+            user = new User(new JSONObject(bundle.getString(Constants.USER)));
 
-			if (user == null) {
-				logout();
-			}
+            if (user == null) {
+                logout();
+            }
+        } catch (Exception e) {
+        }
 
-		} catch (Exception e) {
-		}
+        setContentView(R.layout.activity_item_list);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getTitle());
 
-		setContentView(R.layout.activity_item_list);
+        //FloatingActionButton fab =
+        //    (FloatingActionButton) findViewById(R.id.fab);
+        //fab.setOnClickListener(new View.OnClickListener() {
+        //
+        //    @Override
+        //    public void onClick(final View view) {
+        //
+        //    }
+        //});
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-		toolbar.setTitle(getTitle());
+        loadContent();
+    }
 
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener() {
+    private void loadContent() {
 
-			@Override
-			public void onClick(final View view) {
+        showProgress(true);
 
-			}
-		});
+        List<Processo> processoList = new ArrayList<>();
+        processoList.add(new Processo("Processo trabalhista", "EM ANDAMENTO"));
+        processoList.add(new Processo("Pequenas Causas", "CONCLUIDO"));
 
-		loadContent();
-	}
+        setupRecyclerView(processoList);
+    }
 
-	private void loadContent() {
+    public void setupRecyclerView(List<Processo> list) {
 
-		if (AndroidUtil.isNetworkAvaliable(this)) {
+        View view = findViewById(R.id.item_list);
 
-			showProgress(true);
+        showProgress(false);
 
-			//GetCartItemsTask getCartItemsTask = new GetCartItemsTask(this, user);
-			//getCartItemsTask.execute();
-            //
-			//GetMarketItemsTask getMarketItemsTask = new GetMarketItemsTask(this, user, null);
-			//getMarketItemsTask.execute();
+        if (Validator.isNotNull(view)) {
 
-		} else {
-			//Snackbar.make()
-		}
-	}
+            RecyclerView recyclerView = (RecyclerView) view;
 
-	public void setupRecyclerView(boolean success, String errorMsg, List<Object> list) {
+            simpleItemRecyclerViewAdapter =
+                new SimpleItemRecyclerViewAdapter(ItemListActivity.this, list);
 
-		View view = findViewById(R.id.item_list);
+            recyclerView.setAdapter(simpleItemRecyclerViewAdapter);
+        }
+    }
 
-		showProgress(false);
+    private void showProgress(final boolean show) {
 
-		if (Validator.isNotNull(view)) {
+        final View progressView = findViewById(R.id.item_list_progress);
 
-			RecyclerView recyclerView = (RecyclerView) view;
+        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 
-			if (success) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-				if (Validator.isNull(simpleItemRecyclerViewAdapter)) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
 
-					//simpleItemRecyclerViewAdapter = new SimpleItemRecyclerViewAdapter(ItemListActivity.this,
-					//		marketItemList, user, twoPane);
-				}
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView =
+            (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-				recyclerView.setAdapter(simpleItemRecyclerViewAdapter);
+            @Override
+            public boolean onQueryTextSubmit(String query) {
 
-			} else {
+                return false;
+            }
 
-				if (errorMsg.equals(StringPool.BLANK)) {
+            @Override
+            public boolean onQueryTextChange(String newText) {
 
-					errorMsg = getString(R.string.error_unknown_error) + "\n" + getString(
-							R.string.error_contact_administrator);
+                return false;
+            }
+        });
 
-				}
+        return true;
+    }
 
-				DialogUtil.showAlertDialog(ItemListActivity.this, getString(R.string.error), errorMsg);
-			}
-		}
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-	private void showProgress(final boolean show) {
+        int id = item.getItemId();
 
-		final View progressView = findViewById(R.id.item_list_progress);
+        if (id == R.id.logout) {
 
-		progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            try {
+                logout();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
 
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+    private void logout() throws Exception {
 
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String registrationId = sharedPref.getString("registrationId", "");
+        SharedPreferences.Editor edit = sharedPref.edit();
+        edit.clear();
+        edit.commit();
 
-		final MenuItem searchItem = menu.findItem(R.id.action_search);
-		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        Push.with(SessionContext.createSessionFromCurrentSession())
+            .unregister(registrationId);
 
-			@Override
-			public boolean onQueryTextSubmit(String query) {
+        SessionContext.removeStoredCredentials(
+            CredentialsStorageBuilder.StorageType.SHARED_PREFERENCES);
+        SessionContext.logout();
 
-				return false;
-			}
+        Intent intent =
+            new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
 
-			@Override
-			public boolean onQueryTextChange(String newText) {
-
-				return false;
-			}
-		});
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		int id = item.getItemId();
-
-		if (id == R.id.logout) {
-
-			try {
-				logout();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return true;
-
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	private void logout() throws Exception {
-
-		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-		String registrationId = sharedPref.getString("registrationId", "");
-		SharedPreferences.Editor edit = sharedPref.edit();
-		edit.clear();
-		edit.commit();
-
-		Push.with(SessionContext.createSessionFromCurrentSession()).unregister(registrationId);
-
-		SessionContext.removeStoredCredentials(CredentialsStorageBuilder.StorageType.SHARED_PREFERENCES);
-		SessionContext.logout();
-
-		Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-		startActivity(intent);
-
-		finish();
-	}
+        finish();
+    }
 }

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.liferay.omnihackathon.R;
+import com.liferay.omnihackathon.model.Processo;
+import com.liferay.omnihackathon.util.Constants;
 import java.util.List;
 
 /**
@@ -18,18 +20,13 @@ import java.util.List;
 
 public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-	//private List<MarketItem> marketItemList;
+	private List<Processo> processos;
 	private final ItemListActivity activity;
 	//private User user;
-	private boolean twoPane;
-	private boolean isTypeFilterActive;
 
-	public SimpleItemRecyclerViewAdapter(ItemListActivity context, List items, String user, boolean twoPane) {
-		//this.marketItemList = items;
+	public SimpleItemRecyclerViewAdapter(ItemListActivity context, List items) {
 		this.activity = context;
-		//this.user = user;
-		this.twoPane = twoPane;
-		this.isTypeFilterActive = isTypeFilterActive;
+		this.processos = items;
 	}
 
 	@Override
@@ -42,59 +39,33 @@ public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleIt
 	@Override
 	public void onBindViewHolder(final ViewHolder holder, int position) {
 
-		//holder.mItem = marketItemList.get(position);
-
-		//String url = Constants.PUBLIC_BASE_URL + Constants.IMAGES_ENDPOINT + marketItemList	.get(position)
-		//																					.getImageFileName();
+		final Processo processo = processos.get(position);
 
 		int width = (int) activity.getResources().getDimension(R.dimen.small_image_width);
 		int height = (int) activity.getResources().getDimension(R.dimen.small_image_height);
-		//Picasso.with(holder.mView.getContext()).load(url).resize(width, height).into(holder.imageView);
 
-		//holder.mContentView.setText(marketItemList.get(position).getTitle());
-
-		//holder.price.setText(
-		//		activity.getString(R.string.currency_symbol) + String.valueOf(marketItemList.get(position).getPrice()));
+		holder.mContentView.setText(processo.getName());
+		holder.price.setText(processo.getStatus());
 
 		holder.mView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
-				if (twoPane) {
+			Context context = v.getContext();
 
-					Bundle arguments = new Bundle();
+			Intent intent = new Intent(context, ItemDetailActivity.class);
+			intent.putExtra(Constants.ITEM, processo);
 
-					//arguments.putParcelable(Constants.ITEM, holder.mItem);
-					ItemDetailFragment fragment = new ItemDetailFragment();
-					fragment.setArguments(arguments);
-					activity.getSupportFragmentManager()
-							.beginTransaction()
-							.replace(R.id.item_detail_container, fragment)
-							.commit();
-				} else {
-
-					Context context = v.getContext();
-
-					Intent intent = new Intent(context, ItemDetailActivity.class);
-					//intent.putExtra(Constants.USER, user);
-					//intent.putExtra(Constants.ITEM, holder.mItem);
-
-					context.startActivity(intent);
-				}
+			context.startActivity(intent);
 			}
 		});
-	}
-
-	public void setTwoPane(boolean twoPane) {
-
-		this.twoPane = twoPane;
 	}
 
 	@Override
 	public int getItemCount() {
 
-		return 0;
+		return processos.size();
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {

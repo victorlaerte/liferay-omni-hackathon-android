@@ -1,6 +1,6 @@
 <resources>
     <string name="did_you_forget_your_password">Did you forget your password?</string>
-    <string name="app_name">WeDeploy</string>
+    <string name="app_name">Tribunal de Justiça Diamond Bar</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="action_sign_up">Sign up</string>
     <string name="action_login">Login</string>

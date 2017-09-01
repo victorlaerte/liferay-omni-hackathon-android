@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 25
@@ -59,9 +58,13 @@ dependencies {
     compile 'com.liferay.mobile:liferay-material-viewset:+'
     compile 'com.liferay.mobile:liferay-westeros-viewset:+'
 
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.liferay.mobile.android.auth.Authentication;
 import com.liferay.mobile.android.service.Session;
 import com.liferay.mobile.push.Push;
@@ -45,6 +46,14 @@ public class LoginActivity extends AppCompatActivity {
         emailView = (EditText) loginScreenlet.findViewById(R.id.liferay_login);
         passwordView = (EditText) loginScreenlet.findViewById(R.id.liferay_password);
 
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+
         loginScreenlet.setListener(new LoginListener() {
 			@Override
 			public void onLoginSuccess(User user) {
@@ -70,55 +79,55 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
     private void registerPushNotification(final User user) {
-
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String registrationId =
-            sharedPref.getString("registrationId", StringPool.BLANK);
-        //
-        //if (!registrationId.isEmpty()) {
-        //    return;
-        //}
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
+        Log.d("TOKEN", token);
 
         try {
-            final SharedPreferences.Editor editor = sharedPref.edit();
-
             final Session session = SessionContext.createSessionFromCurrentSession();
 
-            Push push = Push.with(session);
-            push.withPortalVersion(70);
-            push.onSuccess(new Push.OnSuccess() {
+            //Push push = Push.with(session);
+            //push.withPortalVersion(70);
+            //push.onSuccess(new Push.OnSuccess() {
+            //
+            //    @Override
+            //    public void onSuccess(JSONObject device) {
+            //        try {
+            //            String registrationId = device.getString("token");
+            //            editor.putString("registrationId", registrationId);
+            //            editor.commit();
+            //
+            //            JSONObject notification = new JSONObject();
+            //            notification.put("message", "Hello!");
+            //
+            //            Push.with(session).send(user.getId(), notification);
+            //
+            //        } catch (Exception je) {
+            //            Log.e("LOGIN", "Could not parse device's JSON.", je);
+            //        }
+            //    }
+            //
+            //})
+            //    .onFailure(new Push.OnFailure() {
+            //
+            //        @Override
+            //        public void onFailure(Exception e) {
+            //            Log.e("LOGIN", "Could not register device to portal.", e);
+            //        }
+            //
+            //    })
+            //    .register(getApplicationContext(), "82045552649");
 
-                @Override
-                public void onSuccess(JSONObject device) {
-                    try {
-                        String registrationId = device.getString("token");
-                        editor.putString("registrationId", registrationId);
-                        editor.commit();
 
-                        JSONObject notification = new JSONObject();
-                        notification.put("message", "Hello!");
-
-                        Push.with(session).send(user.getId(), notification);
-
-                    } catch (Exception je) {
-                        Log.e("LOGIN", "Could not parse device's JSON.", je);
-                    }
-                }
-
-            })
-                .onFailure(new Push.OnFailure() {
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e("LOGIN", "Could not register device to portal.", e);
-                    }
-
-                })
-                .register(getApplicationContext(), "82045552649");
         }
         catch (Exception e) {
             Log.e("LOGIN", "Could not register device.", e);
         }
+
     }
 
     private void tryPersistentLogin() {

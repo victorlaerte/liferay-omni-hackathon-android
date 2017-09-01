@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import com.liferay.omnihackathon.R;
+import com.liferay.omnihackathon.model.Processo;
 import com.liferay.omnihackathon.util.Constants;
 
 public class ItemDetailFragment extends Fragment {
 
-	private Object mItem;
+	private Processo mItem;
 
 	public ItemDetailFragment() {}
 
@@ -24,12 +26,12 @@ public class ItemDetailFragment extends Fragment {
 
 		if (getArguments().containsKey(Constants.ITEM)) {
 
-			mItem = getArguments().getParcelable(Constants.ITEM);
+			mItem = (Processo) getArguments().getParcelable(Constants.ITEM);
 
 			Activity activity = this.getActivity();
 			CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
 			if (appBarLayout != null) {
-				//appBarLayout.setTitle(mItem.getTitle());
+				appBarLayout.setTitle(mItem.getName());
 			}
 
 		}
@@ -43,25 +45,21 @@ public class ItemDetailFragment extends Fragment {
 
 		if (mItem != null) {
 
-			//String url = Constants.PUBLIC_BASE_URL + Constants.IMAGES_ENDPOINT + mItem.getImageFileName();
+			//ImageButton imageButtonAdd = (ImageButton) rootView.findViewById(R.id.item_add);
+            //
+			//imageButtonAdd.setOnClickListener(new View.OnClickListener() {
+            //
+			//	@Override
+			//	public void onClick(View view) {
+            //
+			//	}
+			//});
 
-			//Picasso.with(getContext()).load(url).resize(mItem.getWidth(), mItem.getHeight()).into(
-			//		(ImageView) rootView.findViewById(R.id.item_large_image));
+			//imageButtonAdd.setVisibility(View.VISIBLE);
 
-			ImageButton imageButtonAdd = (ImageButton) rootView.findViewById(R.id.item_add);
-
-			imageButtonAdd.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View view) {
-
-				}
-			});
-
-			imageButtonAdd.setVisibility(View.VISIBLE);
-
+			//((TextView) rootView.findViewById(R.id.item_name)).setText(mItem.getName());
 			//((TextView) rootView.findViewById(R.id.item_price)).setText(getString(R.string.currency_symbol) + mItem.getPrice());
-			//((TextView) rootView.findViewById(R.id.item_description)).setText(mItem.getDescription());
+			((TextView) rootView.findViewById(R.id.item_description)).setText(mItem.getStatus());
 		}
 
 		return rootView;
