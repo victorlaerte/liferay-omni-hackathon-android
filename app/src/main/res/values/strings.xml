@@ -1,0 +1,29 @@
+<resources>
+    <string name="did_you_forget_your_password">Did you forget your password?</string>
+    <string name="app_name">WeDeploy</string>
+    <string name="title_item_detail">Item Detail</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_login">Login</string>
+    <string name="action_register">Register</string>
+    <string name="action_back">Back</string>
+    <string name="error">Error</string>
+    <string name="erro_no_internet_connection">There is no Internet Available</string>
+    <string name="error_invalid_credentials">Invalid user credentials</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_unknown_error">Unknown Error</string>
+    <string name="error_contact_administrator">Please contact administrator</string>
+    <string name="error_sign_up">Sign Up Error.</string>
+    <string name="reason_colon">Reason:</string>
+    <string name="info">Info</string>
+    <string name="prompt_name">Your full name</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="successful_sign_up">User %1$s added successfully at %2$s. Please sign in.</string>
+    <string name="logout">Logout</string>
+    <string name="currency_symbol">$</string>
+    <string name="description_colon">Description:</string>
+    <string name="search">Search</string>
+</resources>
