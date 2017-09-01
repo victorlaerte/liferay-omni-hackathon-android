@@ -9,11 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import com.liferay.mobile.screens.context.User;
+import com.liferay.omnihackathon.R;
 import com.liferay.omnihackathon.util.AndroidUtil;
 import com.liferay.omnihackathon.util.Constants;
 import com.liferay.omnihackathon.util.DialogUtil;
 import com.liferay.omnihackathon.util.Validator;
-import com.victorlaerte.supermarket.R;
 
 public class ItemDetailActivity extends AppCompatActivity {
 

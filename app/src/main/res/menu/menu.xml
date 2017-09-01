@@ -9,16 +9,16 @@
         liferay:actionViewClass="android.support.v7.widget.SearchView"
         liferay:showAsAction="always" />
 
-    <item
-        android:id="@+id/filter"
-        android:title="Filtrar">
+    <!--<item-->
+        <!--android:id="@+id/filter"-->
+        <!--android:title="Filtrar">-->
 
-        <menu>
-            <item
-                android:id="@+id/filter_no_filter"
-                android:title="Test" />
-        </menu>
-    </item>
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/filter_no_filter"-->
+                <!--android:title="Test" />-->
+        <!--</menu>-->
+    <!--</item>-->
 
     <item
         android:id="@+id/logout"

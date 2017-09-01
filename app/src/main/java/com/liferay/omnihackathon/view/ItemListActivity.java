@@ -1,8 +1,11 @@
 package com.liferay.omnihackathon.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +16,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import com.liferay.mobile.push.Push;
+import com.liferay.mobile.screens.context.SessionContext;
+import com.liferay.mobile.screens.context.User;
+import com.liferay.mobile.screens.context.storage.CredentialsStorageBuilder;
+import com.liferay.omnihackathon.R;
 import com.liferay.omnihackathon.util.AndroidUtil;
+import com.liferay.omnihackathon.util.Constants;
 import com.liferay.omnihackathon.util.DialogUtil;
 import com.liferay.omnihackathon.util.StringPool;
 import com.liferay.omnihackathon.util.Validator;
-import com.victorlaerte.supermarket.R;
 import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ItemListActivity extends AppCompatActivity {
 
@@ -27,7 +37,7 @@ public class ItemListActivity extends AppCompatActivity {
 	 * device.
 	 */
 	private static final String TAG = ItemListActivity.class.getName();
-	//private User user;
+	private User user;
 	private SimpleItemRecyclerViewAdapter simpleItemRecyclerViewAdapter;
 	private AlertDialog alertDialog;
 
@@ -35,9 +45,18 @@ public class ItemListActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
 		Bundle bundle = getIntent().getExtras();
-		//user = bundle.getParcelable(Constants.USER);
+
+		try {
+			user = new User(new JSONObject(bundle.getString(Constants.USER)));
+
+			if (user == null) {
+				logout();
+			}
+
+		} catch (Exception e) {
+		}
+
 
 		setContentView(R.layout.activity_item_list);
 
@@ -70,7 +89,7 @@ public class ItemListActivity extends AppCompatActivity {
 			//getMarketItemsTask.execute();
 
 		} else {
-			//TODO ERROR
+			//Snackbar.make()
 		}
 	}
 
@@ -106,11 +125,6 @@ public class ItemListActivity extends AppCompatActivity {
 				DialogUtil.showAlertDialog(ItemListActivity.this, getString(R.string.error), errorMsg);
 			}
 		}
-	}
-
-	public void onGetProductsCanceled() {
-
-		showProgress(false);
 	}
 
 	private void showProgress(final boolean show) {
@@ -154,26 +168,34 @@ public class ItemListActivity extends AppCompatActivity {
 
 		if (id == R.id.logout) {
 
-			logout();
+			try {
+				logout();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return true;
 
-		} else if (id == R.id.filter_no_filter) {
-
-			return true;
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void logout() {
+	private void logout() throws Exception {
 
-		/*TODO: Do logout on server if possible*/
+		SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+		String registrationId = sharedPref.getString("registrationId", "");
+		SharedPreferences.Editor edit = sharedPref.edit();
+		edit.clear();
+		edit.commit();
 
-		if (AndroidUtil.clearSharedPreferences(getApplicationContext())) {
+		Push.with(SessionContext.createSessionFromCurrentSession()).unregister(registrationId);
 
-			Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-			startActivity(intent);
+		SessionContext.removeStoredCredentials(CredentialsStorageBuilder.StorageType.SHARED_PREFERENCES);
+		SessionContext.logout();
 
-			finish();
-		}
+		Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+		startActivity(intent);
+
+		finish();
 	}
 }

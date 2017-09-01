@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import com.liferay.omnihackathon.R;
 import com.liferay.omnihackathon.util.Constants;
-import com.victorlaerte.supermarket.R;
 
 public class ItemDetailFragment extends Fragment {
 

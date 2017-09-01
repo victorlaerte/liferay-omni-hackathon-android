@@ -30,6 +30,10 @@ android {
             storePassword 'r3m3mb3r'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
